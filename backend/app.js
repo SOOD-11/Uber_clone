@@ -4,6 +4,7 @@ import connectToDatabase from "./db/DatabaseConnet.js";
 import dotenv from "dotenv";
 import { configDotenv } from "dotenv";
 import userrouter from "./routes/user.route.js";
+import cookieParser from "cookie-parser";
 
 const app=express();
 configDotenv();
@@ -11,6 +12,7 @@ app.use(cors({
   origin:process.env.CORS_ORIGIN,
   credentials:true
 }))
+app.use(cookieParser());
 connectToDatabase();
 
 app.get('/', (req,res)=>{
