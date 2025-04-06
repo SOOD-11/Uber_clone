@@ -2,6 +2,7 @@ import JWT from "jsonwebtoken";
 import asynchandler from "../utilities/asynchandler.js";
 import { User } from "../models/User.models.js";
 import ApiError from "../utilities/ApiError.js";
+import { Driver } from "../models/Driver.model.js";
 export const VerifyJWT = asynchandler(async (req, res, next) => {
     try {
       // Extract token from cookies or headers
@@ -15,7 +16,7 @@ export const VerifyJWT = asynchandler(async (req, res, next) => {
       
   
       // Determine user type dynamically
-      const userTypes = { User };
+      const userTypes = { User,Driver};
       let user = null;
   
       for (const [type, model] of Object.entries(userTypes)) {

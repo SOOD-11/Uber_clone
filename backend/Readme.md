@@ -1,15 +1,16 @@
-# User API Documentation
+# API Documentation
 
-This document provides details about the user-related API endpoints.
-
----
-
-## Base URL
-`/api/v1/user`
+This document provides details about the **User** and **Driver** API endpoints.
 
 ---
 
-## Endpoints
+## Base URLs
+- **User API**: `/api/v1/user`
+- **Driver API**: `/api/v1/driver`
+
+---
+
+## User Endpoints
 
 ### 1. Register User
 **URL**: `/register`  
@@ -38,7 +39,6 @@ This document provides details about the user-related API endpoints.
       "firstname": "John",
       "lastname": "Doe"
     },
-    "socketId": null,
     "_id": "userId",
     "createdAt": "timestamp",
     "updatedAt": "timestamp"
@@ -122,7 +122,6 @@ This document provides details about the user-related API endpoints.
       "firstname": "John",
       "lastname": "Doe"
     },
-    "socketId": null,
     "_id": "userId",
     "createdAt": "timestamp",
     "updatedAt": "timestamp"
@@ -139,6 +138,177 @@ This document provides details about the user-related API endpoints.
 **URL**: `/refreshtoken`  
 **Method**: `POST`  
 **Description**: Generates new access and refresh tokens.
+
+#### Request Body
+```json
+{
+  "Refreshtoken": "JWT_REFRESH_TOKEN"
+}
+```
+
+#### Success Response
+**Code**: `201 Created`  
+```json
+{
+  "Accesstoken": "JWT_ACCESS_TOKEN",
+  "Refreshtoken": "JWT_REFRESH_TOKEN"
+}
+```
+
+#### Error Responses
+- **403 Forbidden**: Token not found or invalid.
+- **402 Payment Required**: Tokens expired.
+- **404 Not Found**: Both tokens expired.
+
+---
+
+## Driver Endpoints
+
+### 1. Register Driver
+**URL**: `/register`  
+**Method**: `POST`  
+**Description**: Registers a new driver with vehicle details.
+
+#### Request Body
+```json
+{
+  "email": "driver@example.com",
+  "fullname": {
+    "firstname": "John",
+    "lastname": "Doe"
+  },
+  "password": "Password123",
+  "VehicleDetails": {
+    "vehiclename": "Toyota",
+    "vehicletype": "Car",
+    "plate": "AB12CD3456",
+    "Capacity": 4
+  }
+}
+```
+
+#### Success Response
+**Code**: `201 Created`  
+```json
+{
+  "drivers": {
+    "email": "driver@example.com",
+    "fullname": {
+      "firstname": "John",
+      "lastname": "Doe"
+    },
+    "VehicleDetails": {
+      "vehiclename": "Toyota",
+      "vehicletype": "Car",
+      "plate": "AB12CD3456",
+      "Capacity": 4
+    },
+    "_id": "driverId",
+    "createdAt": "timestamp",
+    "updatedAt": "timestamp"
+  }
+}
+```
+
+#### Error Responses
+- **400 Bad Request**: Validation errors.
+- **401 Unauthorized**: Missing credentials.
+- **402 Conflict**: Email or vehicle already registered.
+
+---
+
+### 2. Login Driver
+**URL**: `/login`  
+**Method**: `POST`  
+**Description**: Authenticates a driver and returns access and refresh tokens.
+
+#### Request Body
+```json
+{
+  "email": "driver@example.com",
+  "password": "Password123"
+}
+```
+
+#### Success Response
+**Code**: `201 Created`  
+```json
+{
+  "message": "logged in",
+  "Accesstoken": "JWT_ACCESS_TOKEN",
+  "Refreshtoken": "JWT_REFRESH_TOKEN"
+}
+```
+
+#### Error Responses
+- **400 Bad Request**: Validation errors.
+- **401 Unauthorized**: Missing credentials or invalid email/password.
+- **404 Not Found**: Driver not registered.
+- **403 Forbidden**: Incorrect password.
+
+---
+
+### 3. Logout Driver
+**URL**: `/logout`  
+**Method**: `POST`  
+**Description**: Logs out the driver by invalidating tokens.
+
+#### Headers
+- **Authorization**: Bearer `<JWT_TOKEN>`
+
+#### Success Response
+**Code**: `201 Created`  
+```json
+{
+  "message": "logged out"
+}
+```
+
+#### Error Responses
+- **401 Unauthorized**: Driver not authenticated.
+
+---
+
+### 4. Get Driver Details
+**URL**: `/get-driver`  
+**Method**: `GET`  
+**Description**: Retrieves details of the authenticated driver.
+
+#### Headers
+- **Authorization**: Bearer `<JWT_TOKEN>`
+
+#### Success Response
+**Code**: `201 Created`  
+```json
+{
+  "driver": {
+    "email": "driver@example.com",
+    "fullname": {
+      "firstname": "John",
+      "lastname": "Doe"
+    },
+    "VehicleDetails": {
+      "vehiclename": "Toyota",
+      "vehicletype": "Car",
+      "plate": "AB12CD3456",
+      "Capacity": 4
+    },
+    "_id": "driverId",
+    "createdAt": "timestamp",
+    "updatedAt": "timestamp"
+  }
+}
+```
+
+#### Error Responses
+- **401 Unauthorized**: Driver not authenticated.
+
+---
+
+### 5. Refresh Tokens
+**URL**: `/refreshtoken`  
+**Method**: `POST`  
+**Description**: Generates new access and refresh tokens for the driver.
 
 #### Request Body
 ```json

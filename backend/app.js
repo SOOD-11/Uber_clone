@@ -5,6 +5,7 @@ import dotenv from "dotenv";
 import { configDotenv } from "dotenv";
 import userrouter from "./routes/user.route.js";
 import cookieParser from "cookie-parser";
+import DriverRoute from "./routes/driver.route.js";
 
 const app=express();
 configDotenv();
@@ -22,4 +23,5 @@ app.use(express.json());
 app.use(express.urlencoded({extended: true}));
 
 app.use("/api/v1/user",userrouter);
+app.use("/api/v1/driver",DriverRoute);
 export default app;

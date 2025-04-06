@@ -22,7 +22,7 @@ const generateAcessandRefreshToken = async (id) => {
 }
 const options = {
     httpOnly: true,
-    secure: true,
+    secure: true
 }
 const registerUser = asynchandler(async (req, res, next) => {
 
@@ -46,9 +46,11 @@ const registerUser = asynchandler(async (req, res, next) => {
     }
     const user = await User.create({
         email,
-        fullname,
-        password
-
+        fullname:{
+            firstname,
+            lastname
+        },
+       password
 
 
     })
