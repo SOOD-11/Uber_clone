@@ -6,7 +6,7 @@ import { Driver } from "../models/Driver.model.js";
 export const VerifyJWT = asynchandler(async (req, res, next) => {
     try {
       // Extract token from cookies or headers
-      const token = req.cookies?.AccessToken || req.headers?.authorization?.replace("Bearer ", "");
+      const token = req.cookies?.Accesstoken || req.headers?.authorization?.replace("Bearer ", "");
   
       if (!token) throw new ApiError(401, "Unauthorized: Missing token");
       console.log(token);

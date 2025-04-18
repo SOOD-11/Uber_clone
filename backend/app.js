@@ -10,8 +10,8 @@ import DriverRoute from "./routes/driver.route.js";
 const app=express();
 configDotenv();
 app.use(cors({
-  origin:process.env.CORS_ORIGIN,
-  credentials:true
+  origin: 'http://localhost:5173',
+  credentials: true
 }))
 app.use(cookieParser());
 connectToDatabase();

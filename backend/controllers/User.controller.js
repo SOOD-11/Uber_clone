@@ -21,8 +21,9 @@ const generateAcessandRefreshToken = async (id) => {
     }
 }
 const options = {
-    httpOnly: true,
-    secure: true
+    httpOnly: false,
+    secure: true,
+    sameSite: 'None'
 }
 const registerUser = asynchandler(async (req, res, next) => {
 
@@ -32,6 +33,7 @@ const registerUser = asynchandler(async (req, res, next) => {
     }
 
     const { email, fullname, password } = req.body;
+    const{firstname,lastname}=fullname;
     console.log(email);
     if ([email, fullname.firstname, password].some((superman) => {
         return superman?.trim() === ""
@@ -69,26 +71,29 @@ const loginUser = asynchandler(async (req, res, next) => {
     const errors = validationResult(req)
     if (!errors.isEmpty()) {
 
-        return res.status(401).json({ errors: errors.array() })
+        return res.status(400).json({ errors: errors.array() })
     }
 
     const { email, password } = req.body;
     if ([email, password].some((superman) => {
         return superman?.trim() === ""
     })) {
-        throw new ApiError(401, " fill all the credentials")
+        throw new ApiError(420, " fill all the credentials")
     }
     const user = await User.findOne({ email: req.body.email });
     if (!user) {
-        throw new ApiError(404, "user not register")
+        throw new ApiError(421, "user not register")
     }
     const ispasswordcorrect = await user.isPasswordCorrect(password);
     if (!ispasswordcorrect) {
-        throw new ApiError(403, "incorrect pssword")
+        throw new ApiError(422, "incorrect password")
     }
-    const { Accesstoken, Refreshtoken } = generateAcessandRefreshToken(user?._id);
+    const { Accesstoken, Refreshtoken } = await generateAcessandRefreshToken(user?._id);
 
-    return res.status(201).cookie("Accesstoken", options).cookie("Refreshtoken", options).json({ message: "logged in" ,Accesstoken,Refreshtoken});
+    return res.status(201)
+    .cookie("Accesstoken",Accesstoken, options)
+    .cookie("Refreshtoken",Refreshtoken, {httpOnly:true,secure:true,sameSite:'None'})
+    .json({ message: "logged in" ,Accesstoken,Refreshtoken});
 })
 
 const logout = asynchandler(async (req, res, next) => {

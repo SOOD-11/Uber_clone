@@ -64,14 +64,14 @@ const data={
 
         
 
-          <button
+          <Link
             
             type="submit"
            
-            className='w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 rounded-lg transition duration-200'
+            className='w-full inline-block  bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 rounded-lg transition duration-200'
           >
-           Login 
-          </button>
+           <p className='text-center'>Login </p>
+          </Link>
         </form>
 
         <p className="text-center text-gray-500 text-sm mt-4">

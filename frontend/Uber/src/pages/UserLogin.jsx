@@ -1,19 +1,71 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
-
+import React, { useContext, useState } from 'react';
+import { Link, Navigate } from 'react-router-dom';
+import axios from 'axios';
+import { UserDataContext } from '../contexts/UserContext';
+import { useNavigate } from 'react-router-dom';
+import axiosInstance from '../utils/axiosInstance';
 const UserLogin = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  // Changed from "aa" to null
 
-  const SubmitHandler=(e)=>{
+  const [user, setUser] = useContext(UserDataContext);
+
+  const [fieldErrors, setFieldErrors] = useState({});
+  const navigate = useNavigate();
+  const [generalError, setGeneralError] = useState('');
+
+  const SubmitHandler = async (e) => {
     e.preventDefault();
-const data={
-  email:email,password:password
-}
+    setFieldErrors({});
+    setGeneralError('');
+    const data = {
+      email,
+      password,
+    };
 console.log(data);
-    setEmail('');
-    setPassword('');
+
+    try {
+    const response = await axiosInstance.post(
+      '/api/v1/user/login',
+      data,
+      {
+        withCredentials: true,
+        headers: {
+          'Content-Type': 'application/json', // optional, usually auto-set
+          'Accept': 'application/json',       // ensure expecting JSON response
+        },
+      }
+    );
+
+      
+  
+      //axiosInstance.defaults.headers.common['Authorization']=`Bearer ${accessToken}`
+      setUser({ isAuthenticated: true });
+
+      setEmail('');
+      setPassword('');
+      navigate('/home');
+    } catch (error) {
+      if (error.response) {
+        const { status, data } = error.response;
+        if (status === 400 && Array.isArray(data.errors)) {
+          const newFieldErrors = {};
+          data.errors.forEach((err) => {
+            if (err.path && err.msg) {
+              newFieldErrors[err.path] = err.msg;
+            }
+          });
+          setFieldErrors(newFieldErrors);
+        } else if ([420, 421, 422].includes(status)) {
+          setGeneralError(data.message || 'Something went offf');
+    
+        } else {
+          setGeneralError('An unexpected error occurred');
+        }
+      } else {
+        setGeneralError('Server error');
+      }
+    }
   };
 
   return (
@@ -25,9 +77,9 @@ console.log(data);
         backgroundPositionY: '40%',
       }}
     >
-      <div className="absolute top-[30%] left-[50%] translate-x-[-50%] translate-y-[-50%]   max-w-sm px-4 sm:px-0">
+      <div className="absolute top-[30%] left-[50%] translate-x-[-50%] translate-y-[-50%] max-w-sm px-4 sm:px-0">
         <div className="bg-transparent bg-opacity-90 rounded-lg shadow-xl p-2 sm:p-8">
-          <form className="flex flex-col gap-5"onSubmit={SubmitHandler} >
+          <form className="flex flex-col gap-5" onSubmit={SubmitHandler}>
             <img
               className="w-20"
               src="https://download.logo.wine/logo/Uber/Uber-Logo.wine.png"
@@ -40,8 +92,15 @@ console.log(data);
               placeholder="Enter your email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="px-4 py-3 border border-black rounded text-lg focus:outline-none focus:ring-2 focus:ring-black"
+              className={`px-4 py-3 border rounded text-lg focus:outline-none ${
+                fieldErrors.email
+                  ? 'border-red-600 focus:ring-red-600'
+                  : 'border-black focus:ring-black'
+              }`}
             />
+            {fieldErrors.email && (
+              <span className="text-red-600 text-sm">{fieldErrors.email}</span>
+            )}
 
             <input
               type="password"
@@ -49,12 +108,21 @@ console.log(data);
               placeholder="Password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="px-4 py-3 border border-black rounded text-lg focus:outline-none focus:ring-2 focus:ring-black"
+              className={`px-4 py-3 border rounded text-lg focus:outline-none ${
+                fieldErrors.password
+                  ? 'border-red-600 focus:ring-red-600'
+                  : 'border-black focus:ring-black'
+              }`}
             />
+            {fieldErrors.password && (
+              <span className="text-red-600 text-sm">{fieldErrors.password}</span>
+            )}
 
-            <button
-              className="bg-black text-white py-3 rounded font-semibold text-lg hover:bg-gray-800 transition"
-            >
+            {generalError && (
+              <div className="text-center text-red-600 text-sm">{generalError}</div>
+            )}
+
+            <button className="bg-black text-white py-3 rounded font-semibold text-lg hover:bg-gray-800 transition">
               Login
             </button>
 
@@ -65,13 +133,13 @@ console.log(data);
               </Link>
             </div>
 
-            <Link to="/Driver-login"><button
-              type="button"
-              className="bg-transparent inline-block text-white py-3 w-full rounded font-semibold text-lg hover:bg-gray-800 transition"
-           
-            >
-              Sign in as Driver
-            </button>
+            <Link to="/Driver-login">
+              <button
+                type="button"
+                className="bg-transparent inline-block text-white py-3 w-full rounded font-semibold text-lg hover:bg-gray-800 transition"
+              >
+                Sign in as Driver
+              </button>
             </Link>
           </form>
         </div>

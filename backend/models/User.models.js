@@ -11,8 +11,8 @@ const userSchema = new mongoose.Schema({
     fullname: {
         firstname: {
             type: String,
-            required: true,
-            minlength: [4, 'enter the firstname']
+            
+           
         },
         lastname: {
             type: String,
