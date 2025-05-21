@@ -68,7 +68,12 @@ required:true
             RefreshToken:{
                 type:String,
                 
-            }
+            },
+            role: {
+                type: String,
+                enum: ['Driver'],
+                default: 'Driver',
+              }
 
 
         }, { timestamps: true })
@@ -91,7 +96,7 @@ required:true
        
      
        driverSchema.methods.generateAccessToken = function () {
-           return jwt.sign({ _id: this.id }, process.env.ACCESS_TOKEN_SECRET, { expiresIn: process.env.ACCESS_TOKEN_EXPIRY }
+           return jwt.sign({ _id: this.id,role: this.role }, process.env.ACCESS_TOKEN_SECRET, { expiresIn: process.env.ACCESS_TOKEN_EXPIRY }
            )
        }
        driverSchema.methods.generateRefreshToken = function () {

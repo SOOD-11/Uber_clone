@@ -2,7 +2,9 @@
 import { Router } from "express";
 import { body } from "express-validator";
 import { VerifyJWT } from "../middlewares/auth.middleware.js";
+
 import { Driverdetails, DriverRegister, loginDriver, logoutDriver, RefreshAccesstokens ,} from "../controllers/driver.controller.js";
+import authorizeRole from "../middlewares/Role.middleware.js";
 const DriverRoute=Router();
 
 DriverRoute.post('/register',[
@@ -23,8 +25,8 @@ DriverRoute.post('/login',[
     body('password').isLength({min:8}).withMessage('password should be Atleast 8 chracters long').matches(/[a-z]/).withMessage('password should have atleast a lowercase letter').matches(/[A-Z]/).withMessage('password should have atleast 1 uppercase letter')
     .matches(/[0-9]/).withMessage('it should have atleast a one number')
 ],loginDriver)
-DriverRoute.post('/logout',VerifyJWT,logoutDriver)
-DriverRoute.get('/get-Driver',VerifyJWT,Driverdetails);
+DriverRoute.post('/logout',VerifyJWT,authorizeRole('Driver'),logoutDriver)
+DriverRoute.get('/get-Driver',VerifyJWT,authorizeRole('Driver'),Driverdetails);
 DriverRoute.post('/refreshtoken',RefreshAccesstokens);
 
 

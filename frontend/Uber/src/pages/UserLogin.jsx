@@ -57,7 +57,7 @@ console.log(data);
           });
           setFieldErrors(newFieldErrors);
         } else if ([420, 421, 422].includes(status)) {
-          setGeneralError(data.message || 'Something went offf');
+          setGeneralError(data.message || 'Something went Wrong');
     
         } else {
           setGeneralError('An unexpected error occurred');

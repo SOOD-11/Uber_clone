@@ -92,7 +92,7 @@ const DriverRegister = asynchandler(async (req, res, next) => {
 const loginDriver = asynchandler(async (req, res, next) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-        return res.status(401).json({ errors: errors.array() });
+        return res.status(400).json({ errors: errors.array() });
     }
 
     const { email, password } = req.body;
@@ -101,15 +101,15 @@ const loginDriver = asynchandler(async (req, res, next) => {
             return superman?.trim() === "";
         })
     ) {
-        throw new ApiError(401, " fill all the credentials");
+        throw new ApiError(422, " fill all the credentials");
     }
     const driver = await Driver.findOne({ email: req.body.email });
     if (!driver) {
-        throw new ApiError(404, "user not register");
+        throw new ApiError(424, "User not register");
     }
     const ispasswordcorrect = await driver.isPasswordCorrect(password);
     if (!ispasswordcorrect) {
-        throw new ApiError(403, "incorrect pssword");
+        throw new ApiError(425, "incorrect pssword");
     }
     const { Accesstoken, Refreshtoken } = generateAcessandRefreshToken(
         driver?._id
@@ -151,7 +151,7 @@ const RefreshAccesstokens = asynchandler(async (req, res, next) => {
         const incomingRefreshToken =
             req.cookie?.Refreshtoken || req.body.Refreshtoken;
         if (!incomingRefreshToken) {
-            throw new ApiError(403, "token not found");
+            throw new ApiError(422, "token not found");
         }
         const decodedtoken = await jwt.verify(
             incomingRefreshToken,

@@ -1,12 +1,16 @@
-import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useContext, useEffect, useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
+import axiosInstance from '../utils/axiosInstance';
+import { CaptainDataContext } from '../contexts/Captaincontext';
 
 const CaptainLogin = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-
-
+const [captain,setCaptain]=useContext(CaptainDataContext);
+const [feilderrors,setFielderrors]=useState({});
+const [generalerror,setGeneralError]=useState('');
+const navigate=useNavigate();
 
   const handleLogin = async (e) => {
     console.log('form submitted');
@@ -18,11 +22,53 @@ const data={
     }
     console.log(data);
 
-      setEmail('');
-      setPassword('');
+try {
+  
+      const response=await axiosInstance.post('/api/v1/driver/login',data,
+        {
+          withCredentials:true,
+          headers:{
+            'Content-Type':'application/json',
+            'Accept':'application/json'
+  
+          },
+        }
+        
+      );
    
+      setCaptain({isAuthenticated:true})
+ 
+        setEmail('');
+        setPassword('');
+        navigate('/captain-home');
+  
+     
+} catch (error) {
+  if(error.response){
+    const {status,data}=error.response;
+    if(status===400 && Array.isArray(data.errors)){
+      const newFieldErrors={};
+      data.errors.forEach((err)=>{
+if(err.path && err.msg){
+  newFieldErrors[err.path]=err.msg;
+}
 
-   
+
+      })
+      setFielderrors(newFieldErrors);
+    }else if([422,424,425].includes(status)){
+setGeneralError(data.message || 'Something went wrong');
+ }else{
+  setGeneralError("ANunexpected error occured");
+
+ }
+
+  }
+  else{
+    setGeneralError('Server Down');
+  }
+  
+}
   }
 
   return (
@@ -43,11 +89,20 @@ const data={
             <input
               type="email"
               placeholder="captain@example.com"
-              className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
+             
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
-            />
+           
+             className={`px-4 py-3 border rounded text-lg focus:outline-none ${
+                feilderrors.email
+                  ? 'border-red-600 focus:ring-red-600'
+                  : 'border-black focus:ring-black'
+              }`}
+              />
+            {feilderrors.email && (
+              <span className="text-red-600 text-sm">{feilderrors.email}</span>
+            )}
           </div>
 
           <div>
@@ -60,18 +115,23 @@ const data={
               onChange={(e) => setPassword(e.target.value)}
               required
             />
+            {feilderrors.password && (
+              <span className="text-red-600 text-sm">{feilderrors.password}</span>
+            )}
+
+            {generalerror && (
+              <div className="text-center text-red-600 text-sm">{generalerror}</div>
+            )}
+
           </div>
 
         
 
-          <Link
-            
-            type="submit"
+      
+          <button  type='submit' className="bg-black w-full text-white py-3 rounded font-semibold text-lg hover:bg-gray-800 transition">
+              Login
+            </button>
            
-            className='w-full inline-block  bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 rounded-lg transition duration-200'
-          >
-           <p className='text-center'>Login </p>
-          </Link>
         </form>
 
         <p className="text-center text-gray-500 text-sm mt-4">

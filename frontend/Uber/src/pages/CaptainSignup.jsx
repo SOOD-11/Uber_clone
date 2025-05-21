@@ -1,7 +1,11 @@
-import React, { useState } from 'react';
-import { motion } from 'framer-motion';
+import React, { useContext, useState } from 'react';
+import { CaptainDataContext } from '../contexts/Captaincontext';
+import useFieldErrors from '../hooks/useFieldErrors';
+import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 const CaptainSignup = () => {
+  const [captain, setCaptain] = useContext(CaptainDataContext);
   const [step, setStep] = useState(1);
   const [formData, setFormData] = useState({
     email: '',
@@ -11,12 +15,26 @@ const CaptainSignup = () => {
     vehiclename: '',
     vehicletype: '',
     plate: '',
-    capacity: '',
+    Capacity: '',
   });
+
+  const navigate = useNavigate();
+  const {
+    errors,
+    clearFieldError,
+    handleErrorResponse,
+    resetErrors,
+  } = useFieldErrors();
+
+  const getErrorMessage = (field) => {
+    const err = errors.find((e) => e.field === field);
+    return err ? err.message : null;
+  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
+    clearFieldError(name);
   };
 
   const handleNext = (e) => {
@@ -26,6 +44,7 @@ const CaptainSignup = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
     const payload = {
       email: formData.email,
       fullname: {
@@ -37,166 +56,177 @@ const CaptainSignup = () => {
         vehiclename: formData.vehiclename,
         vehicletype: formData.vehicletype,
         plate: formData.plate,
-        Capacity: parseInt(formData.capacity),
+        Capacity: parseInt(formData.Capacity),
       },
     };
 
-    console.log(payload);
-    setFormData({
-      email:'',
-      firstname:'',
-      lastname:'',
-      password:'',
-      vehiclename:'',
-      vehicletype:'',
-      plate:'',
-      capacity:'',
-      
+    try {
+      const response = await axios.post(
+        `${import.meta.env.VITE_BASE_URL}/api/v1/driver/register`,
+        payload
+      );
 
-    })
-
-      
+      if (response.status === 201) {
+        setCaptain(response.data);
+        resetErrors();
+        setFormData({
+          email: '',
+          firstname: '',
+          lastname: '',
+          password: '',
+          vehiclename: '',
+          vehicletype: '',
+          plate: '',
+          Capacity: '',
+        });
+        navigate('/Driver-login');
+      }
+    } catch (error) {
+      console.log('Signup error:', error.response?.data || error.message);
+      handleErrorResponse(error);
+    }
   };
-
-  const stepper = (
-    <div className="flex items-center justify-center mb-6">
-      <div className={`w-3 h-3 rounded-full ${step === 1 ? 'bg-black' : 'bg-gray-300'} mr-2`}></div>
-      <div className={`w-3 h-3 rounded-full ${step === 2 ? 'bg-black' : 'bg-gray-300'}`}></div>
-    </div>
-  );
 
   return (
     <div
-      className="min-h-screen bg-cover bg-center bg-no-repeat mb-20 flex items-center justify-center px-4"
+      className="min-h-screen bg-cover bg-center flex items-center justify-center px-4"
       style={{
         backgroundImage:
-          "url('https://images.unsplash.com/photo-1646361700146-855e94bb6ce5?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8dWJlciUyMGRyaXZlcnMlMjBmbGVldHxlbnwwfHwwfHx8MA%3D%3D')",
+          "url('https://images.unsplash.com/photo-1646361700146-855e94bb6ce5?w=900&auto=format&fit=crop&q=60')",
       }}
     >
-      <div className="w-full max-w-md bg-transparent bg-opacity-90  p-8 rounded-2xl shadow-2xl">
-      <img
-              className="w-20"
-              src="data:image/png;base64,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"
-              alt="Uber Logo"
+      <div className="w-full max-w-md bg-black  text-yellow-4 p-8 rounded-2xl shadow-2xl">
+      <img 
+          className="w-16 mb-6" 
+          src="data:image/png;base64,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"
+          alt="Logo"
+        />
+        <div className="flex justify-center gap-2 mb-6">
+          {[1, 2].map((s) => (
+            <div
+              key={s}
+              className={`w-3 h-3 rounded-full border border-amber-400 ${step === s ? 'bg-amber-200' : 'bg-gray-300'}`}
             />
-        <h1 className="text-3xl font-bold text-center text-white  mt-15 mb-2">
-          {step === 1 ? 'Join as a Captain' : 'Vehicle Info'}
-        </h1>
-        {stepper}
-        
-        <motion.form
-        
-          onSubmit={step === 1 ? handleNext : handleSubmit}
-          className="space-y-4"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.3 }}
-        >
-          {step === 1 && (
-            <>
+          ))}
+        </div>
+
+        {step === 1 ? (
+          <form onSubmit={handleNext} className="space-y-4">
+            <div>
               <input
                 type="email"
                 name="email"
                 placeholder="Email"
+                className="input  text-black bg-white"
                 value={formData.email}
                 onChange={handleChange}
-                required
-                className="w-full px-4 py-3 border text-amber-50 rounded-lg"
               />
-              <input
-                type="text"
-                name="firstname"
-                placeholder="First Name"
-                value={formData.firstname}
-                onChange={handleChange}
-                required
-                className="w-full px-4 py-3 border text-amber-100 placeholder-amber-400 rounded-lg"
-              />
-              <input
-                type="text"
-                name="lastname"
-                placeholder="Last Name"
-                value={formData.lastname}
-                onChange={handleChange}
-                required
-                className="w-full px-4 py-3 border rounded-lg"
-              />
+              {getErrorMessage('email') && (
+                <p className="text-red-500 text-sm mt-1">{getErrorMessage('email')}</p>
+              )}
+            </div>
+
+            <div className="flex gap-2">
+              <div className="w-1/2">
+                <input
+                  name="firstname"
+                  placeholder="First Name"
+                  className="input  text-black bg-white"
+                  value={formData.firstname}
+                  onChange={handleChange}
+                />
+                {getErrorMessage('fullname.firstname') && (
+                  <p className="text-red-500 text-sm mt-1">{getErrorMessage('fullname.firstname')}</p>
+                )}
+              </div>
+              <div className="w-1/2">
+                <input
+                  name="lastname"
+                  placeholder="Last Name"
+                  className="input  text-black bg-white"
+                  value={formData.lastname}
+                  onChange={handleChange}
+                />
+                {getErrorMessage('fullname.lastname') && (
+                  <p className="text-red-500 text-sm mt-1">{getErrorMessage('fullname.lastname')}</p>
+                )}
+              </div>
+            </div>
+
+            <div>
               <input
                 type="password"
                 name="password"
                 placeholder="Password"
+                className="input  text-black bg-white "
                 value={formData.password}
                 onChange={handleChange}
-                required
-                className="w-full px-4 py-3 border  placeholder-amber-500 rounded-lg"
               />
-              <button
-                type="submit"
-                className="w-full bg-black text-white py-3 mt-2 rounded-xl hover:opacity-90"
-              >
-                Continue
-              </button>
-            </>
-          )}
+              {getErrorMessage('password') && (
+                <p className="text-red-500 text-sm mt-1">{getErrorMessage('password')}</p>
+              )}
+            </div>
 
-          {step === 2 && (
-            <>
-              <input
-                type="text"
-                name="vehiclename"
-                placeholder="Vehicle Name (e.g. Toyota)"
-                value={formData.vehiclename}
-                onChange={handleChange}
-                required
-                className="w-full px-4 py-3 border rounded-lg"
-              />
-              <input
-                type="text"
-                name="vehicletype"
-                placeholder="Vehicle Type (e.g. Car, Bike)"
-                value={formData.vehicletype}
-                onChange={handleChange}
-                required
-                className="w-full px-4 py-3 border rounded-lg"
-              />
-              <input
-                type="text"
-                name="plate"
-                placeholder="Plate Number (e.g. AB12CD3456)"
-                value={formData.plate}
-                onChange={handleChange}
-                required
-                className="w-full px-4 py-3 border rounded-lg"
-              />
-              <input
-                type="number"
-                name="capacity"
-                placeholder="Passenger Capacity"
-                value={formData.capacity}
-                onChange={handleChange}
-                required
-                className="w-full px-4 py-3 border rounded-lg"
-              />
-              <div className="flex justify-between mt-2">
-                <button
-                  type="button"
-                  onClick={() => setStep(1)}
-                  className="text-sm text-gray-600 hover:underline"
-                >
-                  ← Back
-                </button>
-                <button
-                  type="submit"
-                  className="bg-black text-white px-6 py-2 rounded-xl hover:opacity-90"
-                >
-                  Submit
-                </button>
-                
-              </div>
-              <a href='/Driver-login' ><p>Already Registered ?Login</p></a>
-            </>
-          )}
-        </motion.form>
+            <button type="submit" className="btn w-full mt-4  text-black bg-white">
+              Next
+            </button>
+          </form>
+        ) : (
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <input
+              name="vehiclename"
+              placeholder="Vehicle Name"
+              className="input  text-black bg-white max-w-full"
+              value={formData.vehiclename}
+              onChange={handleChange}
+            />
+            {getErrorMessage('VehicleDetails.vehiclename') && (
+              <p className="text-red-500 text-sm mt-1">{getErrorMessage('VehicleDetails.vehiclename')}</p>
+            )}
+
+<select
+  name="vehicletype"
+  className="input  text-black bg-white"
+  value={formData.vehicletype}
+  onChange={handleChange}
+>
+  <option value="" disabled>Select Vehicle Type</option>
+  <option value="Car">Car</option>
+  <option value="Bike">Bike</option>
+  <option value="Auto">Auto</option>
+</select>
+            {getErrorMessage('VehicleDetails.vehicletype') && (
+              <p className="text-red-500 text-sm mt-1">{getErrorMessage('VehicleDetails.vehicletype')}</p>
+            )}
+
+            <input
+              name="plate"
+              placeholder="License Plate"
+              className="input  text-black bg-white"
+              value={formData.plate}
+              onChange={handleChange}
+            />
+            {getErrorMessage('VehicleDetails.plate') && (
+              <p className="text-red-500 text-sm mt-1">{getErrorMessage('VehicleDetails.plate')}</p>
+            )}
+
+            <input
+              name="Capacity"
+              type="number"
+              placeholder="Capacity"
+              className="input  text-black bg-white"
+              value={formData.Capacity}
+              onChange={handleChange}
+            />
+            {getErrorMessage('VehicleDetails.Capacity') && (
+              <p className="text-red-500 text-sm mt-1">{getErrorMessage('VehicleDetails.Capacity')}</p>
+            )}
+
+            <button type="submit" className="btn w-full mt-4  text-black bg-yellow-200">
+              Register
+            </button>
+          </form>
+        )}
       </div>
     </div>
   );

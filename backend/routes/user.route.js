@@ -3,6 +3,7 @@ import { Router } from "express";
 import { loginUser, logout, refreshAccesstokens, registerUser, Userdetails } from "../controllers/User.controller.js";
 import {body} from "express-validator";
 import { VerifyJWT } from "../middlewares/auth.middleware.js";
+import authorizeRole from "../middlewares/Role.middleware.js";
 const router= Router();
 router.post('/register',[
     body('email').isEmail().withMessage('Invalid email'),
@@ -17,8 +18,8 @@ router.post('/login',[
     body('password').isLength({min:8}).withMessage('password should be Atleast 8 chracters long').matches(/[a-z]/).withMessage('password should have atleast a lowercase letter').matches(/[A-Z]/).withMessage('password should have atleast 1 uppercase letter')
     .matches(/[0-9]/).withMessage('it should have atleast a one number')
 ],loginUser)
-router.post('/logout',VerifyJWT,logout)
-router.get('/get-user',VerifyJWT,Userdetails);
+router.post('/logout',VerifyJWT,authorizeRole('User'),logout)
+router.get('/get-user',VerifyJWT,authorizeRole('User'),Userdetails);
 router.post('/refreshtoken',refreshAccesstokens);
 export default  router;
 

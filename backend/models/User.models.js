@@ -30,7 +30,12 @@ const userSchema = new mongoose.Schema({
 
         type: String,
 
-    }
+    },
+    role: {
+        type: String,
+        enum: ['User'],
+        default: 'User',
+      }
 
 
 
@@ -53,7 +58,7 @@ userSchema.methods.isPasswordCorrect = async function (password) {
 
 
 userSchema.methods.generateAccessToken = function () {
-    return jwt.sign({ _id: this.id }, process.env.ACCESS_TOKEN_SECRET, { expiresIn: process.env.ACCESS_TOKEN_EXPIRY }
+    return jwt.sign({ _id: this.id, role: this.role  }, process.env.ACCESS_TOKEN_SECRET, { expiresIn: process.env.ACCESS_TOKEN_EXPIRY }
     )
 }
 userSchema.methods.generateRefreshToken = function () {

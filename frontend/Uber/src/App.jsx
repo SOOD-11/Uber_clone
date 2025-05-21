@@ -9,6 +9,7 @@ import CaptainSignup from './pages/CaptainSignup';
 import Home from './pages/Home';
 import ProtectedRoutesWrapper from './pages/ProtectedRoutesWrapper';
 import Logout from './pages/logout';
+import Captain_home from './pages/Captain_home';
 
 const App = () => {
   return (
@@ -21,14 +22,21 @@ const App = () => {
     <Route path='/Driver-Signup' element={<CaptainSignup/>}></Route>
     <Route path='/Driver-login' element={<CaptainLogin/>}></Route>
     <Route path='/home' element={
-    <ProtectedRoutesWrapper>
+    <ProtectedRoutesWrapper allowedRoles={['User']}>
     <Home/>
     </ProtectedRoutesWrapper>}
     /><Route path='/logout' element={
-      <ProtectedRoutesWrapper>
+      <ProtectedRoutesWrapper allowedRoles={['User']}>
       <Logout/>
       </ProtectedRoutesWrapper>}
       />
+      <Route path='/captain-home' element={
+        <ProtectedRoutesWrapper allowedRoles={['Driver']}>
+          <Captain_home>
+
+          </Captain_home>
+          </ProtectedRoutesWrapper>
+        }></Route>
     
     </Routes>
 

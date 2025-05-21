@@ -51,7 +51,7 @@ const UserSignup = () => {
         payload
       );
 
-      if (response.status === 200) {
+      if (response.status === 200){
         setUser(response.data);
         resetErrors();
         setFormData({
