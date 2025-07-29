@@ -15,7 +15,7 @@ const LocationSearchPanel = (props ) => {
     <div>
       {suggestions.map((address, index) => (
         <div key={index}  onClick={()=>{
-props.setrideselectionpanel(true)
+props.setrideselectionpanel(true);
         }} className="mb-9 p-2 border-  !border-black">
           <h4 className="bg-gray-100 inline-block px-2 py-2 rounded-full border-2 ">
             <i className="ri-map-pin-line"></i>

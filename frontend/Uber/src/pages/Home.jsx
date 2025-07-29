@@ -14,23 +14,20 @@ import DriverFound from "../components/Driverfound";
 const Home = () => {
   const panel = useRef(null);
   const downarrow = useRef(null);
-  const vehiclepanel=useRef(null);
-  const confirmedpanel=useRef(null);
-  const waitingdriver=useRef(null);
-  const driverfoundref=useRef(null);
+  const vehiclepanel = useRef(null);
+  const confirmedpanel = useRef(null);
+  const waitingdriver = useRef(null);
+  const driverfoundref = useRef(null);
   const [pickup, setpickup] = useState("");
   const [dest, setdest] = useState("");
   const [panelOpen, setpanelOpen] = useState(false);
-  const[rideselectionpanel,setrideselectionpanel]=useState(false);
-  const [confirmedridepanel,setconfirmedridepanel]=useState(false);
-  const [waitingfordriver,setwaitingfordriver]=useState(false);
-  const [driverfound,setdriverfound]=useState(false);
+  const [rideselectionpanel, setrideselectionpanel] = useState(false);
+  const [confirmedridepanel, setconfirmedridepanel] = useState(false);
+  const [waitingfordriver, setwaitingfordriver] = useState(false);
+  const [driverfound, setdriverfound] = useState(false);
 
   //well all tricks worked for
 
-
-
-  
   useGSAP(() => {
     if (panelOpen) {
       gsap.to(panel.current, {
@@ -50,72 +47,66 @@ const Home = () => {
     }
   }, [panelOpen]);
 
-
-  useGSAP(()=>{
-    if(rideselectionpanel){
- gsap.to(vehiclepanel.current,{
-y:0,
-
- })
- gsap.to(panel.current,{
-height:'0%'
- })} else{
-  gsap.to(vehiclepanel.current,{
-  y:1000
-  })
-  
-
- }
-
-  },[rideselectionpanel])
+  useGSAP(() => {
+    if (rideselectionpanel) {
+      gsap.to(vehiclepanel.current, {
+        y: 0,
+      });
+      gsap.to(panel.current, {
+        height: "0%",
+      });
+    } else {
+      gsap.to(vehiclepanel.current, {
+        y: 1000,
+      });
+    }
+  }, [rideselectionpanel]);
 
   useGSAP(() => {
     if (confirmedridepanel) {
       gsap.to(confirmedpanel.current, {
         y: 0,
         duration: 0.5,
-        ease: 'power2.out',
+        ease: "power2.out",
       });
     } else {
       gsap.to(confirmedpanel.current, {
-        y: '100%',
+        y: "100%",
         duration: 0.5,
-        ease: 'power2.in',
+        ease: "power2.in",
       });
     }
-  }, [confirmedridepanel]); 
-  
+  }, [confirmedridepanel]);
+
   useGSAP(() => {
     if (waitingfordriver) {
       gsap.to(waitingdriver.current, {
         y: 0,
         duration: 0.5,
-        ease: 'power2.out',
+        ease: "power2.out",
       });
     } else {
       gsap.to(waitingdriver.current, {
-        y: '100%',
+        y: "100%",
         duration: 0.5,
-        ease: 'power2.in',
+        ease: "power2.in",
       });
     }
   }, [waitingfordriver]);
-  
+
   useGSAP(() => {
     if (driverfound) {
       gsap.to(driverfoundref.current, {
         y: 0,
-        duration: 0.5,
-        ease: 'power2.out',
+     
       });
     } else {
       gsap.to(driverfoundref.current, {
-        y: '100%',
-        duration: 0.5,
-        ease: 'power2.in',
+        y: "100%",
+        
       });
     }
-  }, [driverfound])// <-- make sure to include dependencies
+  }, [driverfound]); // <-- make sure to include dependencies
   const submithandler = (e) => {
     e.preventDefault();
     setpickup("");
@@ -125,16 +116,23 @@ height:'0%'
 
   return (
     <div className="h-screen overflow-hidden relative">
-      <img src={i2} alt="logo" onClick={()=>{
-        setrideselectionpanel(true);
- 
-      }} className="w-16 left-5 top-5 absolute" />
-      <div onClick={()=>{
-        setrideselectionpanel(false);
-      }} className="h-screen w-screen ">
+      <img
+        src={i2}
+        alt="logo"
+        onClick={() => {
+          setrideselectionpanel(true);
+        }}
+        className="w-16 left-5 top-5 absolute"
+      />
+      <div
+        onClick={() => {
+          setrideselectionpanel(false);
+        }}
+        className="h-screen w-screen "
+      >
         <img src={i1} alt="map" className="h-full w-full object-cover" />
-      </div> 
-     
+      </div>
+
       <div className="flex flex-col justify-end h-screen absolute top-0 w-full">
         <div className="h-[30%] p-3 bg-white relative">
           <h5
@@ -175,26 +173,48 @@ height:'0%'
 
         {/* Animated Panel */}
         <div ref={panel} className="bg-white h-0 ">
-          <LocationSuggestion rideselectionpanel={rideselectionpanel} setrideselectionpanel={setrideselectionpanel}></LocationSuggestion>
+          <LocationSuggestion
+            rideselectionpanel={rideselectionpanel}
+            setrideselectionpanel={setrideselectionpanel}
+          ></LocationSuggestion>
         </div>
       </div>
       <div ref={vehiclepanel}>
-        <RideSelectionPanel confirmedridepanel={confirmedridepanel} setconfirmedridepanel={setconfirmedridepanel} rideselectionpanel={rideselectionpanel} setrideselectionpanel={setrideselectionpanel}></RideSelectionPanel>
+        <RideSelectionPanel
+          confirmedridepanel={confirmedridepanel}
+          setconfirmedridepanel={setconfirmedridepanel}
+          rideselectionpanel={rideselectionpanel}
+          setrideselectionpanel={setrideselectionpanel}
+        ></RideSelectionPanel>
       </div>
-      <div   ref={confirmedpanel}  className=" fixed z-10 px-3 py-6 w-full bottom-0 bg-white">
-<ConfirmedRidePanel waitingfordriver={waitingfordriver}  setwaitingfordriver={setwaitingfordriver}   confirmedridepanel={confirmedridepanel} setconfirmedridepanel={setconfirmedridepanel}></ConfirmedRidePanel>
-
+      <div
+        ref={confirmedpanel}
+        className=" fixed z-10 px-3 py-6 w-full bottom-0 bg-white"
+      >
+        <ConfirmedRidePanel
+          waitingfordriver={waitingfordriver}
+          setwaitingfordriver={setwaitingfordriver}
+          confirmedridepanel={confirmedridepanel}
+          setconfirmedridepanel={setconfirmedridepanel}
+        ></ConfirmedRidePanel>
       </div>
-      <div   ref={waitingdriver}  className=" fixed z-10 px-3 py-6 w-full bottom-0 bg-white">
-<WaitingForRider></WaitingForRider>
-
+      <div
+        ref={waitingdriver}
+        className=" fixed z-10 px-3 py-6 w-full bottom-0 bg-white"
+      >
+        <WaitingForRider
+        driverfound={driverfound}
+          setdriverfound={setdriverfound}></WaitingForRider>
       </div>
-      <div ref={driverfoundref}  className=" fixed z-10 px-3 py-6 w-full bottom-0 bg-white">
-<DriverFound  driverfound={driverfound} setdriverfound={setdriverfound}></DriverFound>
-
+      <div
+        ref={driverfoundref}
+        className=" fixed z-10 px-3 py-6 w-full bottom-0 bg-white"
+      >
+        <DriverFound
+          driverfound={driverfound}
+          setdriverfound={setdriverfound}
+        ></DriverFound>
       </div>
-      
-      
     </div>
   );
 };

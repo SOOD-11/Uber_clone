@@ -1,5 +1,5 @@
 import React from "react";
-import drivercar from "../assets/177604B0-1213-40AD-B60B-F1EBA609FCE5_1_105_c.jpeg"
+
 import car from "../components/land-cruiser-exterior-right-front-three-quarter-2.avif"
 
     
@@ -11,7 +11,7 @@ import car from "../components/land-cruiser-exterior-right-front-three-quarter-2
 const DriverFound = () => {
   return (
     <div className="w-full max-h-1/2  mx-auto bg-white p-4 space-y-1 rounded-2xl shadow-lg">
-      <h3 className="text-lg font-semibold text-center">Coming at pickup point in <h5 className="bg-black text-white"> </h5></h3>
+      <h3 className="text-lg font-semibold text-center">Coming at pickup point in</h3> <h5 className="bg-black text-white"> </h5>
       {/* Driver Info */}
       <div className="flex flex-col items-center space-y-2">
         <div className="w-24 h-24 rounded-full overflow-hidden border shadow">
@@ -43,7 +43,7 @@ const DriverFound = () => {
           <i className="ri-focus-3-fill text-xl text-gray-700" />
           <div>
             <h4 className="font-semibold text-sm">24-A Kitchlu Nagar</h4>
-            <p className="text-xs text-gray-600">Rishi Nagar, Punjab, Ludhiana</p>
+            <p className=" text-xs text-gray-600">Rishi Nagar, Punjab, Ludhiana</p>
           </div>
         </div>
 

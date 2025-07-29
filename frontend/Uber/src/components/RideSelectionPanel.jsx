@@ -31,7 +31,7 @@ const RideSelectionPanel = (props) => {
   console.log(props);
 
   return (
-    <div className="fixed z-10 px-3 py-6 w-full translate-y-full  bg-white bottom-[-100%]">
+    <div className="fixed z-10 px-3 py-6 w-full translate-y-full  bg-white bottom-0">
       <h5
         ref={doubledownarrow}
         onClick={() => {

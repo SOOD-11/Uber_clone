@@ -95,7 +95,7 @@ const CaptainSignup = () => {
           "url('https://images.unsplash.com/photo-1646361700146-855e94bb6ce5?w=900&auto=format&fit=crop&q=60')",
       }}
     >
-      <div className="w-full max-w-md bg-black  text-yellow-4 p-8 rounded-2xl shadow-2xl">
+      <div className="w-full max-w-md bg-black/50  text-yellow-4 p-8 rounded-2xl shadow-2xl">
       <img 
           className="w-16 mb-6" 
           src="data:image/png;base64,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"
@@ -222,7 +222,7 @@ const CaptainSignup = () => {
               <p className="text-red-500 text-sm mt-1">{getErrorMessage('VehicleDetails.Capacity')}</p>
             )}
 
-            <button type="submit" className="btn w-full mt-4  text-black bg-yellow-200">
+            <button type="button" onClick={handleSubmit} className="z-10 w-full mt-4  text-white  p-3">
               Register
             </button>
           </form>

@@ -1,8 +1,11 @@
 import React from 'react'
 import car from '../assets/F1EA8E2E-8646-4214-BA91-9521988C3658_4_5005_c-removebg-preview.png';
-const WaitingForRider = () => {
+const WaitingForRider = (props) => {
   return (
-      <div className='flex justify-between items-center flex-col '>
+      <div className='flex justify-between items-center flex-col '
+      onClick={()=>{
+        props.setdriverfound(true);
+      }}>
           <h1 className='align-centre font-bold text-black '>Looking for Nearby Drivers</h1>
           <div className="w-28 h-20 mb-10 align-middle left-5"> 
   <img src={car} alt="cars"/>

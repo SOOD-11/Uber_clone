@@ -10,7 +10,11 @@ import Home from './pages/Home';
 import ProtectedRoutesWrapper from './pages/ProtectedRoutesWrapper';
 import Logout from './pages/logout';
 import Captain_home from './pages/Captain_home';
-
+import Riding from './pages/Riding';
+import  GoingForPickup  from './components/CaptainComponents/GoingForPickup';
+import ConfirmRidePanel from './pages/ConfirmRidePanel';
+import GoingToDropLocation from './pages/GoingToDropLocation';
+import EndRide  from './pages/EndRide';
 const App = () => {
   return (
 
@@ -21,17 +25,22 @@ const App = () => {
     <Route path='/login' element={<UserLogin/>}></Route>
     <Route path='/Driver-Signup' element={<CaptainSignup/>}></Route>
     <Route path='/Driver-login' element={<CaptainLogin/>}></Route>
+    <Route path='/riding' element={<Riding/>}></Route>
+        <Route path='/pickup' element={<GoingForPickup/>}></Route>
+          <Route path='/confirm-pickup' element={<ConfirmRidePanel/>}></Route>
+          <Route path='/GoingtoDrop' element={<GoingToDropLocation/>}></Route>
+           <Route path='/RideDrop' element={<EndRide/>}></Route>
     <Route path='/home' element={
-    <ProtectedRoutesWrapper allowedRoles={['User']}>
+    <ProtectedRoutesWrapper >
     <Home/>
     </ProtectedRoutesWrapper>}
     /><Route path='/logout' element={
-      <ProtectedRoutesWrapper allowedRoles={['User']}>
+      <ProtectedRoutesWrapper >
       <Logout/>
       </ProtectedRoutesWrapper>}
       />
       <Route path='/captain-home' element={
-        <ProtectedRoutesWrapper allowedRoles={['Driver']}>
+        <ProtectedRoutesWrapper >
           <Captain_home>
 
           </Captain_home>
