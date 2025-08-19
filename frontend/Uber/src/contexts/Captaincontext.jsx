@@ -1,40 +1,42 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { createContext } from 'react';
 import roleauth from '../hooks/roleauth';
-export const CaptainDataContext=createContext();
+import axiosInstance from '../utils/axiosInstance';
+export const DriverDataContext=createContext();
+export const useDriverContext=()=>{ return React.useContext(DriverDataContext)};
+
 const Captaincontext=({children})=>{
     const [captain,setCaptain]=useState({
-isAuthenticated:false,
-email:'',
-fullname:{
-    firstname:'',
-    lastname:''
-},
-VehicleDetails: {
-    vehiclename:'',
-    vehicletype:'',
-    plate:' ',
-    Capacity:'',
-  },
-
-
     })
    
-    useEffect(()=>{
-        const {isAuthenticated,role}=roleauth();
-        if(isAuthenticated && role ==='Driver'){
-        useEffect(()=>{
-        setCaptain((prev)=>({
+   {  useEffect(()=>{
+ 
+ 
+        
 
-            ...prev,
-            isAuthenticated:true,
-            role:'Driver',
-        }))},[])
+       const fetchDriver= async()=>{
+
+try {
+    const response=await axiosInstance.get("api/v1/driver/get-Driver",{
+    withCredentials: true
+    
+    
     }
+)
+setCaptain(response.data);
+} catch (error) {
+    console.log(error);
+}
+
+    
+  }
+  fetchDriver() ;
+},[]);}
+    
 
     
     
-})
+
 
 
 
@@ -42,14 +44,14 @@ VehicleDetails: {
     
 return (
 
-    <CaptainDataContext.Provider value={[captain,setCaptain]}>
+    <DriverDataContext.Provider value={{captain,setCaptain}}>
         {children}
-    </CaptainDataContext.Provider>
+    </DriverDataContext.Provider>
 
 
 )
-}
+};
 
 
 
-export default Captaincontext;
+export default  Captaincontext;

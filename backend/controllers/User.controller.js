@@ -93,7 +93,7 @@ const loginUser = asynchandler(async (req, res, next) => {
     return res.status(201)
     .cookie("Accesstoken",Accesstoken, options)
     .cookie("Refreshtoken",Refreshtoken, {httpOnly:true,secure:true,sameSite:'None'})
-    .json({ message: "logged in" ,Accesstoken,Refreshtoken});
+    .json({ message: "logged in" ,Accesstoken,Refreshtoken,user});
 })
 
 const logout = asynchandler(async (req, res, next) => {
@@ -120,7 +120,7 @@ const logout = asynchandler(async (req, res, next) => {
 
 })
 
-
+// essential on reload  for thre context though
 const Userdetails = asynchandler(async(req, res, next)=>  {
 
     const Users = await User.findById(req.user?._id).select('-password -RefreshToken');

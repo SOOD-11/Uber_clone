@@ -333,12 +333,121 @@ This document provides details about the **User** and **Driver** API endpoints.
 
 ---
 
-### Notes
+## Ride Endpoints
+
+### 1. Create Ride
+**URL**: `/api/v1/ride/ride-created`  
+**Method**: `POST`  
+**Description**: Creates a new ride request.
+
+#### Headers
+- **Authorization**: Bearer `<JWT_TOKEN>`
+
+#### Request Body
+```json
+{
+  "pickup": "123 Main St",
+  "dropoffPoint": "456 Elm St",
+  "vehicleType": "Car" // Allowed: "Auto", "Bike", "Car"
+}
+```
+
+#### Success Response
+**Code**: `201 Created`  
+```json
+{
+  "ride": {
+    "pickup": "123 Main St",
+    "dropoffPoint": "456 Elm St",
+    "vehicleType": "Car",
+    "userId": "userId",
+    "status": "created",
+    "_id": "rideId",
+    "createdAt": "timestamp"
+  }
+}
+```
+
+#### Error Responses
+- **400 Bad Request**: Validation errors (e.g., pickup/dropoff too short, invalid vehicle type).
+- **401 Unauthorized**: Missing or invalid JWT token.
+
+---
+
+## Map Endpoints
+
+### 1. Get Coordinates
+**URL**: `/api/v1/map/getcordinates`  
+**Method**: `GET`  
+**Description**: Get latitude and longitude for a given address.
+
+#### Query Params
+- `address`: String (min 3 characters)
+
+#### Success Response
+**Code**: `200 OK`  
+```json
+{
+  "coordinates": {
+    "lat": 12.9716,
+    "lng": 77.5946
+  }
+}
+```
+
+#### Error Responses
+- **400 Bad Request**: Validation errors.
+
+---
+
+### 2. Get Distance and Time
+**URL**: `/api/v1/map/get-Distance-Time`  
+**Method**: `GET`  
+**Description**: Get distance and estimated time between pickup and drop addresses.
+
+#### Query Params
+- `pickupaddress`: String (min 3 characters)
+- `dropaddress`: String (min 3 characters)
+
+#### Success Response
+**Code**: `200 OK`  
+```json
+{
+  "distance": "12 km",
+  "duration": "25 mins"
+}
+```
+
+#### Error Responses
+- **400 Bad Request**: Validation errors.
+
+---
+
+### 3. Get Address Suggestions
+**URL**: `/api/v1/map/get-suggestions`  
+**Method**: `GET`  
+**Description**: Get address autocomplete suggestions.
+
+#### Query Params
+- `address`: String (min 3 characters)
+
+#### Success Response
+**Code**: `200 OK`  
+```json
+{
+  "suggestions": [
+    "123 Main St",
+    "124 Main St",
+    "125 Main St"
+  ]
+}
+```
+
+#### Error Responses
+- **400 Bad Request**: Validation errors.
+
+---
+
+**Note:**  
 - All endpoints requiring authentication must include the `Authorization` header with a valid JWT token.
-- Ensure the following environment variables are configured in your `.env` file:
-  ```env
-  ACCESS_TOKEN_SECRET=your_access_token_secret
-  REFRESH_TOKEN_SECRET=your_refresh_token_secret
-  ACCESS_TOKEN_EXPIRY=15m
-  REFRESH_TOKEN_EXPIRY=7d
-  ```
+- Validation errors will be returned as an array of objects with `msg`, `path`, and other details for easy mapping in the frontend.

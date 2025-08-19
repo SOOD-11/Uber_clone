@@ -111,15 +111,16 @@ const loginDriver = asynchandler(async (req, res, next) => {
     if (!ispasswordcorrect) {
         throw new ApiError(425, "incorrect pssword");
     }
-    const { Accesstoken, Refreshtoken } = generateAcessandRefreshToken(
+    const { Accesstoken, Refreshtoken } = await generateAcessandRefreshToken(
         driver?._id
     );
 
     return res
         .status(201)
-        .cookie("Accesstoken", options)
-        .cookie("Refreshtoken", options)
-        .json({ message: "logged in", Accesstoken, Refreshtoken });
+        .cookie("Accesstoken",Accesstoken ,{httpOnly:false,secure:true,sameSite:'None'})
+        .cookie("Refreshtoken", Refreshtoken, {httpOnly:true,secure:true,sameSite:'None'})
+
+        .json({ message: "logged in", Accesstoken, Refreshtoken ,driver});
 });
 
 const logoutDriver = asynchandler(async (req, res, next) => {
@@ -164,7 +165,7 @@ const RefreshAccesstokens = asynchandler(async (req, res, next) => {
         if (incomingRefreshToken !== drivers?.RefreshToken) {
             throw new ApiError(402, "tokens expired");
         }
-        const { Accesstoken, Refreshtoken } = generateAcessandRefreshToken(
+        const { Accesstoken, Refreshtoken } = await generateAcessandRefreshToken(
             drivers?._id
         );
         res

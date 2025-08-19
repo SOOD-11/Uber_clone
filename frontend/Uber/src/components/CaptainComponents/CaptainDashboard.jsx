@@ -1,6 +1,9 @@
 import React from 'react'
+import { useDriverContext } from '../../contexts/Captaincontext'
 
-const CaptainDasboard = () => {
+const CaptainDashboard = (props) => {
+
+  const {captain}=useDriverContext();
   return (
     <div className=' bg-white'>
 <div >
@@ -8,8 +11,8 @@ const CaptainDasboard = () => {
         <div className="w-16 h-16 rounded-full mx-auto bg-gray-300 overflow-hidden">
           <img src= " " alt="profile" className="w-full h-full object-cover" />
         </div>
-        <p className="font-semibold mt-2 text-lg">Harsh Patel</p>
-        <h4 className="text-2xl font-bold text-green-600">₹3000</h4>
+        <p className="font-semibold mt-2 text-lg">{captain?.driver?.fullname.firstname}</p>
+        <h4 className="text-2xl font-bold text-green-600">{props.earning}</h4>
         <p className="text-sm text-gray-600">Earned</p>
       </div>
 
@@ -31,4 +34,4 @@ const CaptainDasboard = () => {
   )
 }
 
-export default CaptainDasboard
+export default CaptainDashboard;

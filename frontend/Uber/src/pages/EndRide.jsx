@@ -44,22 +44,22 @@ const {acceptedRequest,setAcceptedRequest}= useAcceptedRequest();
         alt="User"
         className="w-14 h-14 rounded-full object-cover border-2 !border-black mb-2"
       />
-      <h5 className="text-lg font-semibold mb-4">{acceptedRequest.username}</h5>
+      <h5 className="text-lg font-semibold mb-4">{acceptedRequest.User?.fullname?.firstname}</h5>
 
       <div className="w-full space-y-2">
         <div className="flex justify-between p-2 border !border-black rounded">
           <i className="ri-focus-3-fill" />
-          <span className="">{acceptedRequest.pickupPoint}</span>
+          <span className="">{acceptedRequest?.pickup}</span>
         </div>
 
         <div className="flex justify-between p-2 border !border-black rounded">
           <i className="ri-map-pin-fill" />
-          <span>{acceptedRequest.DropOffPoint}</span>
+          <span>{acceptedRequest?.destination}</span>
         </div>
 
         <div className="flex justify-between p-2 border !border-black rounded">
           <i className="ri-cash-line" />
-          <span>{acceptedRequest.price}</span>
+          <span>{acceptedRequest?.fare}</span>
         </div>
 
 

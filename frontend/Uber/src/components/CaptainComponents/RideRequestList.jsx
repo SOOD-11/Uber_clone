@@ -6,6 +6,8 @@ import { useGSAP } from "@gsap/react";
 import { useNavigate } from "react-router-dom";
 import { useAcceptedRequest } from "../../contexts/AcceptedRequestContext";
 
+import axios from "axios";
+import { useDriverContext } from "../../contexts/Captaincontext";
 const dummyRequests = [
   {
     id: 1,
@@ -91,31 +93,44 @@ const dummyRequests = [
   }, */
 ];
 
-const RideRequestList = () => {
+const RideRequestList = (props) => {
   const navigate=useNavigate();
-  const [requests, setRequests] = useState(dummyRequests);
+const {captain}=useDriverContext();
   const RideRequestRef=useRef(null);
- const {setAcceptedRequest}=useAcceptedRequest();
+ const {acceptedRequest,setAcceptedRequest}=useAcceptedRequest();
 // to handle confirm
 
 
-  const handleConfirm = (id) => {
+  const   handleConfirm = async (id) => {
 
 
     console.log("Confirmed ride request:", id);
+const response=await axios.post(
+        `${import.meta.env.VITE_BASE_URL}/api/v1/ride/ride-accepted`,{
+rideId:id,
+driverId:captain.driver._id
+
+        },{
+
+          withCredentials: true
+        }
+     )
 
 
-    const confirmedRequest= requests.find((req)=>req.id === id);
-    setRequests((prev) => prev.filter((req) => req.id !== id));
+ 
 
 
-    setAcceptedRequest(confirmedRequest);
+
+    setAcceptedRequest(response.data);
     // to store in localstorage so that on refreshing or low internet ride request data does get lost
-    localStorage.setItem('AcceptedRequests',JSON.stringify(confirmedRequest));
+    localStorage.setItem('AcceptedRequests',JSON.stringify(response.data));
+
+
+    
     navigate('/pickup');
     // to clear all pending requests after confirming one requests
 
-      setRequests([]);
+      props.setRequests([]);
 //
 
  
@@ -124,7 +139,7 @@ const RideRequestList = () => {
 useEffect(() => {
     if (!RideRequestRef.current) return;
 
-    if (requests.length === 0) {
+    if (props.requests.length === 0) {
       gsap.to(RideRequestRef.current, {
         backdropFilter: "blur(0px)",
         backgroundColor: "rgba(0,0,0,0)",
@@ -139,23 +154,23 @@ useEffect(() => {
         ease: "power2.out",
       });
     }
-  }, [requests.length]);
+  }, [props.requests.length]);
   const handleIgnore = (id) => {
     console.log("Ignored ride request:", id);
 
-    setRequests((prev) => prev.filter((req) => req.id !== id));
+    setRequests((prev) => prev.filter((req) => req._id !== id));
   };
 
   return (
 <div ref={RideRequestRef} className="fixed inset-0 z-50 flex items-start justify-center bg-black/30   overflow-x-hidden">
       <div className="w-screen flex flex-col space-y-4">
-    {requests.map((request, index) => (
+    {props.requests.map((request, index) => (
       <div
-        key={request.id}
+        key={request?._id}
         className="absolute w-full transition-all duration-300"
         style={{
           top: `${index * 20}px`,
-          zIndex: requests.length +index,
+          zIndex: props.requests?.length +index,
         }}
       >
         <RideRequestCard

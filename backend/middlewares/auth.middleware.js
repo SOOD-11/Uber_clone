@@ -9,7 +9,7 @@ export const VerifyJWT = asynchandler(async (req, res, next) => {
       const token = req.cookies?.Accesstoken || req.headers?.authorization?.replace("Bearer ", "");
   
       if (!token) throw new ApiError(401, "Unauthorized: Missing token");
-      console.log(token);
+
       // Verify JWT
       const decodedToken = JWT.verify(token, process.env.ACCESS_TOKEN_SECRET);
 

@@ -5,18 +5,37 @@ import logo from "../assets/images-removebg-preview.png";
 import { Link } from 'react-router-dom';
 import OTPInput from '../components/Otpinput';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 const ConfirmRidePanel = () => {
 const navigate=useNavigate();
-const {acceptedRequest}= useAcceptedRequest();
+const {acceptedRequest,setAcceptedRequest}= useAcceptedRequest();
 
   const [enteredOTP, setEnteredOTP] = React.useState("");
-  const handleConfirmRide = (e) => {
-      
+  const [error,setError]=React.useState("");
+ const handleConfirmRide = async (e) => {
+  e.preventDefault();
+  try {
+    const response = await axios.post(
+      `${import.meta.env.VITE_BASE_URL}/api/v1/ride/ride-start`,
+      {
+        rideId: acceptedRequest._id,
+        otp: enteredOTP
+      },{
 
-    e.preventDefault();
-    console.log("Ride confirmed with OTP:",enteredOTP );
-    navigate('/GoingtoDrop')
-  };
+        withCredentials:true
+      }
+    );
+
+    if (response.status === 201) {
+      setAcceptedRequest(response.data);
+      navigate('/GoingtoDrop');
+    }
+  } catch (error) {
+    if (error.response && error.response.status === 431) {
+      setError(error.response.data?.message);
+    } 
+  }
+};
 
 
 
@@ -40,36 +59,36 @@ const {acceptedRequest}= useAcceptedRequest();
         alt="User"
         className="w-14 h-14 rounded-full object-cover border-2 !border-black mb-2"
       />
-      <h5 className="text-lg font-semibold mb-4">{acceptedRequest.username}</h5>
+      <h5 className="text-lg font-semibold mb-4">{acceptedRequest.User.fullname.firstname}</h5>
 
       <div className="w-full space-y-2">
         <div className="flex justify-between p-2 border !border-black rounded">
           <i className="ri-focus-3-fill" />
-          <span className="">{acceptedRequest.pickupPoint}</span>
+          <span className="">{acceptedRequest.pickup}</span>
         </div>
 
         <div className="flex justify-between p-2 border !border-black rounded">
           <i className="ri-map-pin-fill" />
-          <span>{acceptedRequest.DropOffPoint}</span>
+          <span>{acceptedRequest.destination}</span>
         </div>
 
         <div className="flex justify-between p-2 border !border-black rounded">
           <i className="ri-cash-line" />
-          <span>{acceptedRequest.price}</span>
+          <span>{acceptedRequest.fare}</span>
         </div>
 
 
         {/* OTP Section */}
-        <h3 className="text-md flex flex-col items-center">Enter the Otp </h3>
-  <form onSubmit={handleConfirmRide} className="mt-2  mb-1 flex flex-col items-center">
-          <OTPInput length={4} onChange={setEnteredOTP} />
-</form>
-        {/* Buttons */}
-        <div className=" flex flex-col justify-centre  items-centre mt-6  space-y-10">
+        {/* OTP Section */}
+<h3 className="text-md flex flex-col items-center">Enter the OTP</h3>
+<form onSubmit={handleConfirmRide} className="mt-2 mb-1 flex flex-col items-center">
+  <OTPInput length={4} onChange={setEnteredOTP} />
+  {error && <p className="text-red-500 mt-2">{error}</p>}
+  <div className=" flex flex-col justify-centre  items-centre mt-6  space-y-10">
           <button
-            onClick={handleConfirmRide}
-            type='submit'
-            className="!bg-green-500 text-white px-4 py-2 mb-2 rounded  overflow-x-hidden"
+          type="submit"
+   
+          className="!bg-green-500  hover:!bg-red-600 text-white px-4 py-2 mb-2 rounded  overflow-x-hidden"
           >
             Confirm Ride
           </button>
@@ -79,7 +98,11 @@ const {acceptedRequest}= useAcceptedRequest();
           >
             Cancel
           </button>
-        </div>
+                  </div>
+</form>
+        {/* Buttons */}
+       
+
       </div>
     </div>
     </div>

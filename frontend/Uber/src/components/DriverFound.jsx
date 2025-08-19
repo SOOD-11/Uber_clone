@@ -1,6 +1,7 @@
 import React from "react";
 
 import car from "../components/land-cruiser-exterior-right-front-three-quarter-2.avif"
+import { useRideContext } from "../contexts/RIdeFormContext";
 
     
 
@@ -9,6 +10,8 @@ import car from "../components/land-cruiser-exterior-right-front-three-quarter-2
 
 
 const DriverFound = () => {
+
+  const {ridedetails}=useRideContext();
   return (
     <div className="w-full max-h-1/2  mx-auto bg-white p-4 space-y-1 rounded-2xl shadow-lg">
       <h3 className="text-lg font-semibold text-center">Coming at pickup point in</h3> <h5 className="bg-black text-white"> </h5>
@@ -18,11 +21,13 @@ const DriverFound = () => {
           <img src=" " alt="driver" className="w-full h-full object-cover" />
         </div>
         <h3 className="text-lg font-semibold text-center">Driver Details</h3>
-        <p className="border px-4 py-1 rounded-md font-medium text-gray-800">Mr. Chaman</p>
+        <p className="border px-4 py-1 rounded-md font-medium text-gray-800">{ridedetails?.driver?.fullname?.firstname + " "+ridedetails?.driver?.fullname?.lastname}</p>
         <div className="flex items-center gap-2 text-sm text-gray-600">
           <i className="ri-phone-line text-xl" />
           <span>+91 98765 43210</span>
         </div>
+        <p> share This Code To :{ridedetails?.driver?.fullname?.firstname + " "+ridedetails?.driver?.fullname?.lastname}</p>
+        <div className="text-black font-extra bold p-3 bg-amber-100">{ridedetails.Otp}</div>
       </div>
 
       {/* Vehicle Info */}
@@ -30,10 +35,10 @@ const DriverFound = () => {
         <img src={car} alt="vehicle" className="w-32 h-20 object-contain" />
         <h3 className="font-semibold">Vehicle Details</h3>
         <p className="border border-red-500 px-3 py-1 rounded text-sm font-medium">
-          White - LandCruiser
+          {ridedetails?.driver?.VehicleDetails?.vehiclename}
         </p>
         <p className="border border-red-500 px-3 py-1 rounded text-sm font-medium">
-          PB 10 GG 0001
+           {ridedetails?.driver?.VehicleDetails?.plate}
         </p>
       </div>
 
@@ -42,19 +47,19 @@ const DriverFound = () => {
         <div className="flex items-start gap-2 border p-3 rounded-lg">
           <i className="ri-focus-3-fill text-xl text-gray-700" />
           <div>
-            <h4 className="font-semibold text-sm">24-A Kitchlu Nagar</h4>
-            <p className=" text-xs text-gray-600">Rishi Nagar, Punjab, Ludhiana</p>
+            <h4 className="font-semibold text-sm"></h4>
+            <p className=" text-xs text-gray-600">{ridedetails?.pickup}</p>
           </div>
         </div>
 
         <div className="flex items-center gap-2 border p-3 rounded-lg">
           <i className="ri-map-pin-fill text-xl text-red-600" />
-          <p className="font-medium text-sm">Ending Location</p>
+          <p className="font-medium text-sm">{ridedetails?.destination}</p>
         </div>
 
         <div className="flex items-center gap-2 border p-3 rounded-lg">
           <i className="ri-cash-line text-xl text-green-600" />
-          <p className="font-medium text-sm">Amount to be paid</p>
+          <p className="font-medium text-sm">{ridedetails?.fare}</p>
         </div>
       </div>
     </div>

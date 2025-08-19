@@ -53,12 +53,12 @@ required:true
             },
             location: {
 
-                latitude: {
+                ltd: {
                     type: Number,
                 
 
                 },
-                longitude: {
+                lng: {
                     type: Number,
                    
 

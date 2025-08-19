@@ -1,22 +1,37 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import axiosInstance from '../utils/axiosInstance';
+import RIdeFormContext from '../contexts/RIdeFormContext';
+import { useRideContext } from '../contexts/RIdeFormContext';
 
-const LocationSearchPanel = (props ) => {
-  console.log(props);
+const LocationSearchPanel = ({suggestions,activeField,setrideselectionpanel,setpanelopen}) => {
+  const {setDestination,setPickup}=useRideContext();
+
+
+ 
+  // to get the dynamic sugggestions
+
+
+    const handleSuggestionClick = (suggestion) => {
+        if (activeField === 'Pickup') {
+            setPickup(suggestion)
+        } else if (activeField === 'Destination') {
+            setDestination(suggestion)
+        }
+
+    }
+
+
+ 
   // Replace this array with the actual suggestions from API/state
-  const suggestions = [
-    "24-c, New Kitchlu Nagar, Radha Swami Beas ludhiana",
-    "Sector 18, Chandigarh, India",
-    "Connaught Place, Delhi, India",
-    "HSR Layout, Bangalore, India",
-    "Park Street, Kolkata, India"
-  ];
-
+ 
+console.log("Suggestions"+ suggestions);
   return (
     <div>
-      {suggestions.map((address, index) => (
+      {Array.isArray(suggestions) && suggestions.map((address, index) => (
         <div key={index}  onClick={()=>{
-props.setrideselectionpanel(true);
-        }} className="mb-9 p-2 border-  !border-black">
+
+handleSuggestionClick(address)}
+        } className="mb-9 p-2 border-  !border-black">
           <h4 className="bg-gray-100 inline-block px-2 py-2 rounded-full border-2 ">
             <i className="ri-map-pin-line"></i>
           </h4>

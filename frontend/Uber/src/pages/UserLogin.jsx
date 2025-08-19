@@ -1,19 +1,22 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useState,useEffect } from 'react';
 import { Link, Navigate } from 'react-router-dom';
 import axios from 'axios';
-import { UserDataContext } from '../contexts/UserContext';
+import { UserDataContext, useUserContext } from '../contexts/UserContext';
 import { useNavigate } from 'react-router-dom';
 import axiosInstance from '../utils/axiosInstance';
 const UserLogin = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  const [user, setUser] = useContext(UserDataContext);
+  const {user, setUser} = useUserContext();
 
   const [fieldErrors, setFieldErrors] = useState({});
   const navigate = useNavigate();
   const [generalError, setGeneralError] = useState('');
-
+useEffect(() => {
+  console.log("Updated user context value:", user);
+  console.log(generalError);
+}, [user]);
   const SubmitHandler = async (e) => {
     e.preventDefault();
     setFieldErrors({});
@@ -36,11 +39,9 @@ console.log(data);
         },
       }
     );
-
-      
-  
-      //axiosInstance.defaults.headers.common['Authorization']=`Bearer ${accessToken}`
-      setUser({ isAuthenticated: true });
+setUser(response.data);
+      console.log(" login resposne from the backend to the frontend",response);
+    
 
       setEmail('');
       setPassword('');
@@ -64,6 +65,7 @@ console.log(data);
         }
       } else {
         setGeneralError('Server error');
+       
       }
     }
   };

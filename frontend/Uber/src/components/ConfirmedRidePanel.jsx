@@ -1,8 +1,11 @@
 import React from 'react'
 import car from '../assets/F1EA8E2E-8646-4214-BA91-9521988C3658_4_5005_c-removebg-preview.png';
+import { useRideContext } from '../contexts/RIdeFormContext';
+ 
 const ConfirmedRidePanel = (props) => {
+  const {ridedetails}=useRideContext();
 
-    
+    console.log(ridedetails);
     
   return (
     <div className='flex justify-between items-center flex-col '>
@@ -14,24 +17,29 @@ const ConfirmedRidePanel = (props) => {
             <div className='flex justify-around p-2 m-1 border-2  !border-black rounded-3xl'>
             <h5><i className="ri-focus-3-fill"></i></h5>
             <div className="div">
-            <h3 className='font-bold'>24-A kitchlu nagar</h3>
-            <p className='font-light'>rishi nagar punjab ludhiana</p>
+            <h3 className='font-bold text-black'>{ridedetails?.pickup}</h3>
+            
             </div>
             </div>
             <div className='flex justify-around p-4  m-1 border-2  !border-black rounded-3xl'>
             <h5><i className="ri-map-pin-fill"></i></h5>
-          ending location
+   {ridedetails?.destination}
             </div>
 
             <div className='flex justify-around p-4 m-1 border-2  !border-black rounded-3xl'>
             <h5><i class="ri-cash-line"></i></h5>
-       amount to be paid 
+       ₹{ridedetails?.fare}
             </div>
            
  
         </div>
 
 <button onClick={()=>{
+ try {// to handle and create ride ans ending first time to databases 
+    props.handleVehicleSelection(props.vehicletype);
+ } catch (error) {
+  console.log("please tell me whats wrong with you")
+ }
 props.setwaitingfordriver(true);
 props.setconfirmedridepanel(false);
 

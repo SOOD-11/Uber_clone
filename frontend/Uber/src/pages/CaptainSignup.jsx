@@ -1,11 +1,11 @@
 import React, { useContext, useState } from 'react';
-import { CaptainDataContext } from '../contexts/Captaincontext';
+import {  useDriverContext } from '../contexts/Captaincontext';
 import useFieldErrors from '../hooks/useFieldErrors';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
 const CaptainSignup = () => {
-  const [captain, setCaptain] = useContext(CaptainDataContext);
+const {captain,setCaptain}=useDriverContext();
   const [step, setStep] = useState(1);
   const [formData, setFormData] = useState({
     email: '',

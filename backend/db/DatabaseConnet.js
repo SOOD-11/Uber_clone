@@ -15,9 +15,11 @@ try {
     })
     
 } catch (error) {
-    Console.log("database connection failed ");
+    console.log("database connection failed ");
     
 }
-
+ await mongoose.connect(`${process.env.MONGO_DB_URI}/${process.env.DB}`, {
+  serverSelectionTimeoutMS: 60000, // 10 seconds
+});
 }
 export default connectToDatabase; 

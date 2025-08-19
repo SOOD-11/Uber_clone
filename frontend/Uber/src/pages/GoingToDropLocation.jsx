@@ -7,14 +7,16 @@ import { useAcceptedRequest } from '../contexts/AcceptedRequestContext';
 import { useGSAP } from "@gsap/react";
 import gsap from 'gsap';
 import { useNavigate } from 'react-router-dom';
+import { useRideContext } from '../contexts/RIdeFormContext';
 
 const GoingForDropLocation = () => {
   const [showDirections, setShowDirections] = useState(false);
   const [isAtDropLocation, setIsAtDropLocation] = useState(false);
+  const {ridedetails}=useRideContext();
  
   const containerRef = useRef(null);
   const Navigate=useNavigate();
-  const { AcceptedRequest } = useAcceptedRequest();
+  const { acceptedRequest } = useAcceptedRequest();
 
   const handleGetDirections = () => {
     setShowDirections(true);

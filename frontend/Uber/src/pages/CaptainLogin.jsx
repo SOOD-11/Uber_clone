@@ -2,12 +2,12 @@ import React, { useContext, useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import axiosInstance from '../utils/axiosInstance';
-import { CaptainDataContext } from '../contexts/Captaincontext';
+import {  useDriverContext } from '../contexts/Captaincontext';
 
 const CaptainLogin = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-const [captain,setCaptain]=useContext(CaptainDataContext);
+const {captain,setCaptain}=useDriverContext();
 const [feilderrors,setFielderrors]=useState({});
 const [generalerror,setGeneralError]=useState('');
 const navigate=useNavigate();
@@ -35,8 +35,9 @@ try {
         }
         
       );
+      console.log(response.data);
    
-      setCaptain({isAuthenticated:true})
+      setCaptain(response.data);
  
         setEmail('');
         setPassword('');
@@ -59,7 +60,7 @@ if(err.path && err.msg){
     }else if([422,424,425].includes(status)){
 setGeneralError(data.message || 'Something went wrong');
  }else{
-  setGeneralError("ANunexpected error occured");
+  setGeneralError("AN unexpected error occured");
 
  }
 

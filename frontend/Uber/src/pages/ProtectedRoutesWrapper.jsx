@@ -1,16 +1,16 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Cookie from "js-cookie";
-import { UserDataContext } from '../contexts/UserContext';
-import { CaptainDataContext } from '../contexts/Captaincontext';
+import { UserDataContext, useUserContext } from '../contexts/UserContext';
+import {  useDriverContext } from '../contexts/Captaincontext';
 
 const ProtectedRoutesWrapper = ({ children }) => {
-  const [user, setUser] = useContext(UserDataContext);
-  const [captain, setCaptain] = useContext(CaptainDataContext);
+  const {user,setUser}=useUserContext();
+ const {driver,setDriver}=useDriverContext();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
 
-  const token = Cookie.get('Accesstoken');
+  const token = Cookie.get("Accesstoken");
 
   useEffect(() => {
     console.log("Access token from cookie:", token);
