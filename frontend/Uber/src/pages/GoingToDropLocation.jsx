@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import logo from "../assets/images-removebg-preview.png";
 import map from '../assets/rendezvous.e688c83c (1).png';
 import { useAcceptedRequest } from '../contexts/AcceptedRequestContext';
-
+import MapComponent from '../components/Map';
 import { useGSAP } from "@gsap/react";
 import gsap from 'gsap';
 import { useNavigate } from 'react-router-dom';
@@ -40,7 +40,8 @@ Navigate('/RideDrop');
 
       {/* Map and directions */}
       <div className="flex-1 relative">
-        <img src={map} alt="Map View" className="w-full h-full object-cover" />
+        <MapComponent driverLocation={{ lat: acceptedRequest?.driver?.location.ltd, lng: acceptedRequest?.driver?.location.lng }}
+targetLocation={acceptedRequest?.destination} ></MapComponent>
 
         {showDirections && (
           <div className="absolute bottom-[22vh] left-0 right-0 px-4 z-40">

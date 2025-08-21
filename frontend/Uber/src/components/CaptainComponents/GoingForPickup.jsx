@@ -7,6 +7,7 @@ import { useAcceptedRequest } from '../../contexts/AcceptedRequestContext';
 import { useGSAP } from "@gsap/react";
 import gsap from 'gsap';
 import { useNavigate } from 'react-router-dom';
+import MapComponent from '../Map';
 
 const GoingForPickup = () => {
   const [showDirections, setShowDirections] = useState(false);
@@ -14,7 +15,7 @@ const GoingForPickup = () => {
   const confirmedpanelref = useRef(null);
   const containerRef = useRef(null);
   const Navigate=useNavigate();
-  const { AcceptedRequest } = useAcceptedRequest();
+  const { acceptedRequest } = useAcceptedRequest();
 
   const handleGetDirections = () => {
     setShowDirections(true);
@@ -37,8 +38,9 @@ Navigate('/confirm-pickup');
 
       {/* Map and directions */}
       <div className="flex-1 relative">
-        <img src={map} alt="Map View" className="w-full h-full object-cover" />
-
+     
+<MapComponent driverLocation={{ lat: acceptedRequest?.driver.location.ltd, lng: acceptedRequest?.driver.location.lng }}
+targetLocation={acceptedRequest.pickup} ></MapComponent>
         {showDirections && (
           <div className="absolute bottom-[22vh] left-0 right-0 px-4 z-40">
             <div className="bg-white rounded-xl shadow-lg p-4 space-y-2">

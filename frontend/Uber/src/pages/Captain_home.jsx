@@ -5,10 +5,12 @@ import { Link } from "react-router-dom";
 import { Socket } from "socket.io-client";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
+import MapComponent from "../components/Map.jsx";
 import CaptainDashboard from "../components/CaptainComponents/CaptainDashboard";
 import RideRequestList from "../components/CaptainComponents/RideRequestList";
 import ConfirmRidePanel from "./ConfirmRidePanel.jsx";
 import GoingforPickup from "../components/CaptainComponents/GoingForPickup.jsx";
+import TrackingMap from "../components/TrackingMap.jsx";
 import { useEffect } from "react";
 import { useDriverContext } from "../contexts/Captaincontext.jsx";
 import { useSocketContext } from "../contexts/SocketContext.jsx";
@@ -19,12 +21,13 @@ const Captain_home = () => {
   const [dashboardview, setDashboardView] = useState(true);
   const [confirmedpanel, setconfirmedpanel] = useState(false);
   const [requests, setRequests] = useState([]);
+  const [isopen,setisopen]=useState(false);
 
   const [earning, setEarning] = useState(0);
   const { sendMessage, receiveMessage } = useSocketContext();
   const captainDashboardRef = React.useRef(null);
   const confirmedridepanelRef = React.useRef(null);
-  const { captain } = useDriverContext();
+  const { captain,setCaptain } = useDriverContext();
   const { acceptedRequest } = useAcceptedRequest();
 
   useEffect(() => {
@@ -45,27 +48,28 @@ const Captain_home = () => {
               },
             });
           },
-          (error) => {
-            console.error("Error getting geolocation:", error);
-          }
-        );
+          (error) => {console.error("Error getting geolocation:", error)},
+          
+          
+);
+    
       } else {
         console.error("Geolocation not supported by this browser.");
       }
     };
 
     updateLocation();
-    {
-      /*setInterval(() => {
+    
+      setInterval(() => {
   updateLocation();
-}, 10000); */
-    }
+}, 10000); 
+    
     // receiving message  from user about the ride request
 
     receiveMessage("new-ride", (newRequest) => {
       try {
         console.log("New ride notification to captain:", newRequest);
-
+setisopen(true);
         setRequests((prevRequests) => {
           // Flatten User.fullname if it's an object/array
           const formattedRequest = {
@@ -134,7 +138,7 @@ const Captain_home = () => {
     }
   }, [confirmedpanel]);
   return (
-    <div className="w-screen h-screen flex flex-col justify-around overflow-hidden">
+    <div className="w-screen h-screen flex flex-col justify-around ">
       {/* Fixed Top Logo */}
       <Link
         to="/captain-home"
@@ -144,20 +148,25 @@ const Captain_home = () => {
       </Link>
 
       {/* Map Section (Top Half) */}
-      <div className="flex-1 relative">
-        <img src={map} alt="Map" className="w-full h-full object-cover" />
+      <div  className={`flex-1 relative ${
+    isopen ? "pointer-events-none" : "pointer-events-auto"
+  }`}>
+       <TrackingMap driverLocation={captain.driver?.location}></TrackingMap>
       </div>
 
       {/* Info Section (Bottom Half) */}
       <div
         ref={captainDashboardRef}
         
-        className=" fixed z-10 px-3 py-6 w-full bottom-0 translate-y-0 bg-white"
+        className=" fixed z-10 px-3 py-6 w-full bottom-0 translate-y-0 bg-white pointer-events-none"
+        style={{ pointerEvents: dashboardview ? "auto" : "none" }}
       >
         <CaptainDashboard 
         ></CaptainDashboard>
       </div>
-      <div className=" ">
+      <div className={
+    isopen ? "pointer-events-auto" : "pointer-events-none"
+  }>
         <RideRequestList
           requests={requests}
           setRequests={setRequests}
@@ -169,7 +178,7 @@ const Captain_home = () => {
       </div>
       <div
         ref={confirmedridepanelRef}
-        className="fixed z-10 px-3 py-6 w-full bottom-0  pointer-events-auto translate-y-full bg-white"
+        className="fixed z-10 px-3 py-6 w-full bottom-0  pointer-events-none translate-y-full bg-white"
       >
         <ConfirmRidePanel confirmedRequest={selectedrequest}></ConfirmRidePanel>
       </div>

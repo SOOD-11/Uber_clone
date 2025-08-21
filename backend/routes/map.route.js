@@ -5,8 +5,8 @@ import { query } from "express-validator";
 const Maproute= Router();
 
 
-Maproute.get('/getcordinates',[
-   query('address').isLength({min:3}).withMessage('the address should be greater than 3 letters ')
+Maproute.post('/getcordinates',[
+body('address').isLength({min:3}).withMessage('the address should be greater than 3 letters ')
 ],mapcontrols);
 Maproute.get('/get-Distance-Time',[
 query('pickupaddress').isLength({min:3}).withMessage('the address should be greater than 3 letters ')
